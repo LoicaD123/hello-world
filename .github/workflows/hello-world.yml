@@ -1,15 +1,33 @@
-name: Hello World Workflow
+name: Lint Code on Push or Pull Request
 
-# Le workflow se déclenche à chaque push sur la branche main
+# ✅ Déclencheurs : push et pull request
 on:
   push:
     branches:
       - main
+  pull_request:
+    branches:
+      - main
 
 jobs:
-  greeting:
-    runs-on: ubuntu-latest  # Machine virtuelle Ubuntu
+  lint:
+    runs-on: ubuntu-latest
 
     steps:
-      - name: Dire bonjour
-        run: echo "Hello World"
+      # Étape 1 : Récupérer le code du dépôt
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # Étape 2 : Installer Node.js
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18  # tu peux choisir une autre version (ex: 20)
+
+      # Étape 3 : Installer les dépendances
+      - name: Install dependencies
+        run: npm install
+
+      # Étape 4 : Vérifier le code avec ESLint
+      - name: Run lint
+        run: npm run lint
